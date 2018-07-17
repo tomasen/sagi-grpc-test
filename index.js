@@ -1,3 +1,5 @@
+require('module-alias/register');
+
 var messages = require('sagi-apis-client/health/v1/health_pb');
 var services = require('sagi-apis-client/health/v1/health_grpc_pb');
 
@@ -7,7 +9,7 @@ var fs = require('fs');
 function TestHealth() {
   process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
 
-  var ssl_creds = grpc.credentials.createSsl(
+  var sslCreds = grpc.credentials.createSsl(
     fs.readFileSync('./ca.pem'),
     fs.readFileSync('./key.pem'),
     fs.readFileSync('./client.pem')
@@ -19,8 +21,8 @@ function TestHealth() {
     'rejectUnauthorized': 'false',
   };
 
-  var client = new services.HealthClient('apis.sagittarius.ai:8443',
-                                          ssl_creds, options);
+  var client = new services.HealthClient('apis.stage.sagittarius.ai:8443',
+                                          sslCreds, options);
   var request = new messages.HealthCheckRequest();
 
   client.check(request, function(err, response) {
